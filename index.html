@@ -423,60 +423,56 @@ function chipTexture(text){
 }
 
 function pmsCardTexture(logoImg){
-  const W = 768, H = 520;
+  const W = 768, H = 444;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
-  roundRect(g, 8, 8, W - 16, H - 16, 44);
+  roundRect(g, 8, 8, W - 16, H - 16, 42);
   const pg = g.createLinearGradient(0, 8, 0, H - 8);
   pg.addColorStop(0, 'rgba(51,204,255,0.62)');
   pg.addColorStop(1, 'rgba(51,204,255,0.46)');
   g.fillStyle = pg; g.fill();
   g.save();
-  roundRect(g, 8, 8, W - 16, H - 16, 44); g.clip();
-  const psheen = g.createLinearGradient(0, 8, 0, 160);
+  roundRect(g, 8, 8, W - 16, H - 16, 42); g.clip();
+  const psheen = g.createLinearGradient(0, 8, 0, 140);
   psheen.addColorStop(0, 'rgba(255,255,255,0.40)');
   psheen.addColorStop(1, 'rgba(255,255,255,0)');
-  g.fillStyle = psheen; g.fillRect(8, 8, W - 16, 160);
+  g.fillStyle = psheen; g.fillRect(8, 8, W - 16, 140);
   g.restore();
-  roundRect(g, 8, 8, W - 16, H - 16, 44);
+  roundRect(g, 8, 8, W - 16, H - 16, 42);
   g.lineWidth = 5; g.strokeStyle = 'rgba(51,204,255,0.95)'; g.stroke();
-  // Authorized Vendor badge, top center
-  g.font = '700 24px ' + FAM; g.textAlign = 'left';
-  const avText = 'AUTHORIZED VENDOR';
-  const avW = g.measureText(avText).width + 96, avX = (W - avW) / 2, avY = 30, avH = 56, avC = avY + avH / 2;
-  roundRect(g, avX, avY, avW, avH, avH / 2);
-  g.fillStyle = '#ffffff'; g.fill();
-  g.beginPath(); g.arc(avX + 36, avC, 15, 0, Math.PI * 2); g.fillStyle = '#0098e6'; g.fill();
-  g.strokeStyle = '#ffffff'; g.lineWidth = 4; g.lineCap = 'round';
-  g.beginPath(); g.moveTo(avX + 29, avC); g.lineTo(avX + 34, avC + 6); g.lineTo(avX + 44, avC - 6); g.stroke();
-  g.fillStyle = '#0b6aa0'; g.textBaseline = 'middle';
-  g.fillText(avText, avX + 62, avC + 1);
-  g.textBaseline = 'alphabetic';
   // title
   g.shadowColor = 'rgba(8,15,28,0.5)'; g.shadowBlur = 9;
   g.fillStyle = '#ffffff'; g.font = '700 32px ' + FAM; g.textAlign = 'center';
-  g.fillText('Y O U R   P M S / E H R', W / 2, 142);
+  g.fillText('Y O U R   P M S / E H R', W / 2, 70);
   g.shadowColor = 'transparent'; g.shadowBlur = 0;
   // logo plate
-  roundRect(g, 134, 170, 500, 196, 26);
+  roundRect(g, 134, 96, 500, 190, 26);
   g.fillStyle = '#ffffff'; g.fill();
   if(logoImg){
     const lw = 400, lh = lw * (logoImg.height / logoImg.width);
-    g.drawImage(logoImg, (W - lw) / 2, 170 + (196 - lh) / 2, lw, lh);
+    g.drawImage(logoImg, (W - lw) / 2, 96 + (190 - lh) / 2, lw, lh);
   } else {
     g.fillStyle = '#94a3b8'; g.font = '500 26px ' + FAM;
-    g.fillText('[LOGO MISSING]', W / 2, 280);
+    g.fillText('[LOGO MISSING]', W / 2, 200);
   }
-  // bottom badges
-  const badges = ['HIPAA SECURE', 'REAL-TIME SYNC', '2-WAY SYNC'];
-  const bw = 212, gap = 14, total = badges.length * bw + (badges.length - 1) * gap;
+  // bottom badges (middle badge is a two-line stacked "Authorized / Vendor")
+  const badges = ['HIPAA SECURE', 'AUTHORIZED\nVENDOR', '2-WAY SYNC'];
+  const bw = 212, gap = 14, bh = 70, by = 320, total = badges.length * bw + (badges.length - 1) * gap;
   let bx = (W - total) / 2;
   badges.forEach(b => {
-    roundRect(g, bx, 432, bw, 58, 29);
+    roundRect(g, bx, by, bw, bh, 22);
     g.fillStyle = 'rgba(255,255,255,0.18)'; g.fill();
     g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 2; g.stroke();
-    g.fillStyle = '#ffffff'; g.font = '600 22px ' + FAM; g.textAlign = 'center';
-    g.fillText(b, bx + bw / 2, 468);
+    g.fillStyle = '#ffffff'; g.textAlign = 'center';
+    const lines = b.split('\n');
+    if(lines.length === 2){
+      g.font = '700 21px ' + FAM;
+      g.fillText(lines[0], bx + bw / 2, by + 31);
+      g.fillText(lines[1], bx + bw / 2, by + 55);
+    } else {
+      g.font = '600 22px ' + FAM;
+      g.fillText(b, bx + bw / 2, by + bh / 2 + 7);
+    }
     bx += bw + gap;
   });
   return makeTexture(c);
@@ -565,7 +561,7 @@ let pmsBeam = null;
   const cardY = 10.4;                 // higher above the heart, more breathing room
   const pos = new THREE.Vector3(0, cardY, 0);
   const cardW = 6.8;                  // slightly smaller (~87%)
-  const cardH = cardW * (520 / 768);
+  const cardH = cardW * (444 / 768);
 
   // ---- energy beam (heart <-> card), glowing + bidirectional particle flow ----
   const A = new THREE.Vector3(0, 0.95, 0), B = new THREE.Vector3(0, cardY - cardH / 2, 0);
