@@ -350,43 +350,44 @@ function cardTexture(item, accent){
   const W = 768, H = 312;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
-  // frosted glass panel: light, translucent, subtle category tint
+  // frosted COLORED glass panel, tinted to the category group
   roundRect(g, 8, 8, W - 16, H - 16, 42);
   const fg = g.createLinearGradient(0, 8, 0, H - 8);
-  fg.addColorStop(0, 'rgba(255,255,255,0.62)');
-  fg.addColorStop(0.55, 'rgba(255,255,255,0.34)');
-  fg.addColorStop(1, accent + '40');
+  fg.addColorStop(0, accent + 'A6');
+  fg.addColorStop(1, accent + '7A');
   g.fillStyle = fg; g.fill();
-  // glass sheen across the top
+  // white frosted sheen across the top for the glass feel
   g.save();
   roundRect(g, 8, 8, W - 16, H - 16, 42); g.clip();
-  const sheen = g.createLinearGradient(0, 8, 0, 132);
-  sheen.addColorStop(0, 'rgba(255,255,255,0.5)');
+  const sheen = g.createLinearGradient(0, 8, 0, 150);
+  sheen.addColorStop(0, 'rgba(255,255,255,0.38)');
   sheen.addColorStop(1, 'rgba(255,255,255,0)');
-  g.fillStyle = sheen; g.fillRect(8, 8, W - 16, 132);
+  g.fillStyle = sheen; g.fillRect(8, 8, W - 16, 150);
   g.restore();
-  // category border glow
+  // bright category border glow
   roundRect(g, 8, 8, W - 16, H - 16, 42);
-  g.lineWidth = 4; g.strokeStyle = accent + 'D9'; g.stroke();
-  // category dot
+  g.lineWidth = 4; g.strokeStyle = accent + 'F2'; g.stroke();
+  // white category dot
   g.beginPath(); g.arc(72, 90, 16, 0, Math.PI * 2);
-  g.fillStyle = accent; g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.96)'; g.fill();
   g.beginPath(); g.arc(72, 90, 27, 0, Math.PI * 2);
-  g.strokeStyle = accent + '99'; g.lineWidth = 3; g.stroke();
-  // text, dark for contrast on the light glass
-  g.fillStyle = '#0d1b2e';
+  g.strokeStyle = 'rgba(255,255,255,0.65)'; g.lineWidth = 3; g.stroke();
+  // white text with a soft shadow so it stays readable on every tint
+  g.shadowColor = 'rgba(8,15,28,0.5)'; g.shadowBlur = 9; g.shadowOffsetY = 1;
+  g.fillStyle = '#ffffff';
   fitFont(g, item.title, '700', 40, 26, FAM, W - 190);
   g.fillText(item.title, 122, 104);
-  g.fillStyle = '#33455c';
+  g.fillStyle = 'rgba(255,255,255,0.94)';
   fitFont(g, item.desc, '500', 29, 21, FAM, W - 120);
   g.fillText(item.desc, 60, 196);
+  g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetY = 0;
   if(item.soon){
     g.font = '700 24px ' + FAM;
     const bw = g.measureText('COMING SOON').width + 44;
     roundRect(g, 60, 224, bw, 50, 25);
-    g.fillStyle = 'rgba(245,158,11,0.15)'; g.fill();
-    g.strokeStyle = 'rgba(245,158,11,0.6)'; g.lineWidth = 2; g.stroke();
-    g.fillStyle = '#b45309';
+    g.fillStyle = 'rgba(255,255,255,0.20)'; g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.65)'; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#ffffff';
     g.fillText('COMING SOON', 82, 258);
   }
   return makeTexture(c);
@@ -423,25 +424,25 @@ function pmsCardTexture(logoImg){
   const g = c.getContext('2d');
   roundRect(g, 8, 8, W - 16, H - 16, 42);
   const pg = g.createLinearGradient(0, 8, 0, H - 8);
-  pg.addColorStop(0, 'rgba(255,255,255,0.64)');
-  pg.addColorStop(0.55, 'rgba(255,255,255,0.36)');
-  pg.addColorStop(1, 'rgba(51,204,255,0.26)');
+  pg.addColorStop(0, 'rgba(51,204,255,0.60)');
+  pg.addColorStop(1, 'rgba(51,204,255,0.44)');
   g.fillStyle = pg; g.fill();
   g.save();
   roundRect(g, 8, 8, W - 16, H - 16, 42); g.clip();
-  const psheen = g.createLinearGradient(0, 8, 0, 120);
-  psheen.addColorStop(0, 'rgba(255,255,255,0.5)');
+  const psheen = g.createLinearGradient(0, 8, 0, 132);
+  psheen.addColorStop(0, 'rgba(255,255,255,0.38)');
   psheen.addColorStop(1, 'rgba(255,255,255,0)');
-  g.fillStyle = psheen; g.fillRect(8, 8, W - 16, 120);
+  g.fillStyle = psheen; g.fillRect(8, 8, W - 16, 132);
   g.restore();
   roundRect(g, 8, 8, W - 16, H - 16, 42);
-  g.lineWidth = 4; g.strokeStyle = 'rgba(51,204,255,0.85)'; g.stroke();
-  g.fillStyle = '#0b4a73'; g.font = '700 30px ' + FAM;
+  g.lineWidth = 4; g.strokeStyle = 'rgba(51,204,255,0.95)'; g.stroke();
+  g.shadowColor = 'rgba(8,15,28,0.5)'; g.shadowBlur = 9;
+  g.fillStyle = '#ffffff'; g.font = '700 30px ' + FAM;
   g.textAlign = 'center';
   g.fillText('Y O U R   P M S / E H R', W / 2, 70);
+  g.shadowColor = 'transparent'; g.shadowBlur = 0;
   roundRect(g, 134, 100, 500, 180, 26);
   g.fillStyle = '#ffffff'; g.fill();
-  g.lineWidth = 2; g.strokeStyle = 'rgba(11,74,115,0.35)'; g.stroke();
   if(logoImg){
     const lw = 380, lh = lw * (logoImg.height / logoImg.width);
     g.drawImage(logoImg, (W - lw) / 2, 100 + (180 - lh) / 2, lw, lh);
@@ -454,9 +455,9 @@ function pmsCardTexture(logoImg){
   let bx = (W - total) / 2;
   badges.forEach(b => {
     roundRect(g, bx, 318, bw, 58, 29);
-    g.fillStyle = 'rgba(16,185,129,0.12)'; g.fill();
-    g.strokeStyle = 'rgba(16,185,129,0.5)'; g.lineWidth = 2; g.stroke();
-    g.fillStyle = '#34d399'; g.font = '600 22px ' + FAM;
+    g.fillStyle = 'rgba(255,255,255,0.18)'; g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#ffffff'; g.font = '600 22px ' + FAM;
     g.fillText(b, bx + bw / 2, 354);
     bx += bw + gap;
   });
