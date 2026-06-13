@@ -28,6 +28,8 @@
   .mr-title{margin-top:10px;font-family:'Outfit','Inter',-apple-system,sans-serif;font-size:clamp(26px,3.6vw,46px);font-weight:300;
     letter-spacing:0.06em;color:#f1f5f9}
   .mr-title .lite{color:#33CCFF}
+  .mr-subtitle{margin-top:9px;font-family:'Outfit','Inter',-apple-system,sans-serif;font-size:clamp(14px,1.6vw,19px);font-weight:400;letter-spacing:0.24em;color:#eef3f9}
+  .mr-subtitle .lite{color:#33CCFF}
   .mr-chips{margin-top:14px;display:flex;gap:10px;justify-content:center}
   .mr-chip{font-size:11.5px;font-weight:600;letter-spacing:0.06em;padding:6px 14px;border-radius:999px;
     color:#bfe9ff;border:1px solid rgba(51,204,255,0.35);background:rgba(51,204,255,0.08)}
@@ -63,7 +65,8 @@
   <div class="mr-loader" id="mrLoader"><div class="mr-pulse"></div><span>Systems + Heart</span></div>
   <div class="mr-vignette"></div>
   <div class="mr-head">
-    <div class="mr-title">MedRebel <span class="lite">Operating System</span></div>
+    <div class="mr-title">Med<span class="lite">Rebel</span> OS</div>
+    <div class="mr-subtitle">Systems + <span class="lite">Heart</span></div>
   </div>
   <div class="mr-btns">
     <button class="mr-btn" id="mrReset">RESET VIEW</button>
@@ -378,8 +381,8 @@ function cardTexture(item, accent){
   g.fillStyle = lightBg ? '#10202e' : '#ffffff';
   fitFont(g, item.title, '800', 46, 30, FAM, W - 180);
   g.fillText(item.title, 122, 104);
-  g.fillStyle = lightBg ? 'rgba(16,32,46,0.82)' : 'rgba(255,255,255,0.94)';
-  fitFont(g, item.desc, '600', 30, 22, FAM, W - 110);
+  g.fillStyle = lightBg ? '#0a1622' : 'rgba(255,255,255,0.94)';
+  fitFont(g, item.desc, '700', 32, 24, FAM, W - 110);
   g.fillText(item.desc, 60, 196);
   g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetY = 0;
   if(item.soon){
