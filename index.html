@@ -64,10 +64,6 @@
   <div class="mr-vignette"></div>
   <div class="mr-head">
     <div class="mr-title">MedRebel <span class="lite">Operating System</span></div>
-    <div class="mr-chips">
-      <span class="mr-chip">HIPAA SECURE</span>
-      <span class="mr-chip">POWERED BY CLAUDE</span>
-    </div>
   </div>
   <div class="mr-btns">
     <button class="mr-btn" id="mrReset">RESET VIEW</button>
@@ -576,14 +572,26 @@ CORE.forEach((text, i) => {
   coreGroup.add(chip);
 });
 
-const coreLt = labelTexture('MEDREBEL OS CORE  ·  INCLUDED', '#7fd4ff');
-const coreLabel = new THREE.Sprite(new THREE.SpriteMaterial({
-  map: coreLt.tex, transparent: true, opacity: 0.95, depthWrite: false
-}));
-const clw = 11;
-coreLabel.scale.set(clw, clw / coreLt.aspect, 1);
-coreLabel.position.set(0, -6.0, 0);
-orbitGroup.add(coreLabel);
+/* ---------- trust badges beneath the MedRebel logo ---------- */
+function badgeTexture(text){
+  const W = 620, H = 150;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  roundRect(g, 6, 6, W - 12, H - 12, (H - 12) / 2);
+  g.fillStyle = 'rgba(13,24,42,0.55)'; g.fill();
+  g.lineWidth = 3; g.strokeStyle = 'rgba(51,204,255,0.5)'; g.stroke();
+  g.fillStyle = '#dff3ff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  fitFont(g, text, '600', 44, 28, FAM, W - 80);
+  g.fillText(text, W / 2, H / 2 + 2);
+  g.textBaseline = 'alphabetic';
+  return makeTexture(c);
+}
+[['HIPAA SECURE', -2.15], ['POWERED BY CLAUDE', 2.15]].forEach(([t, x]) => {
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({map: badgeTexture(t), transparent: true, opacity: 0.96, depthWrite: false}));
+  const bw = 3.9; sp.scale.set(bw, bw * (150 / 620), 1);
+  sp.position.set(x, -5.2, 0);
+  scene.add(sp);
+});
 
 /* ---------- ambient particles ---------- */
 const starCount = isMobile ? 140 : 260;
