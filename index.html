@@ -559,13 +559,35 @@ GROUPS.forEach(group => {
   orbitGroup.add(label);
 });
 
-/* PMS / EHR node with the real Open Dental logo */
+/* PMS / EHR node with a bidirectional energy beam to the heart */
+let pmsBeam = null;
 (function(){
-  const pos = new THREE.Vector3(0, 7.4, 0);
-  const conn = addConnection(pos, '#33CCFF');
+  const cardY = 10.4;                 // higher above the heart, more breathing room
+  const pos = new THREE.Vector3(0, cardY, 0);
+  const cardW = 6.8;                  // slightly smaller (~87%)
+  const cardH = cardW * (520 / 768);
+
+  // ---- energy beam (heart <-> card), glowing + bidirectional particle flow ----
+  const A = new THREE.Vector3(0, 0.95, 0), B = new THREE.Vector3(0, cardY - cardH / 2, 0);
+  const len = B.y - A.y, midY = (A.y + B.y) / 2;
+  const coreMat = new THREE.MeshBasicMaterial({color: 0x9fecff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false});
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, len, 18, 1, true), coreMat);
+  core.position.set(0, midY, 0); orbitGroup.add(core);
+  const glowMat = new THREE.MeshBasicMaterial({color: 0x33CCFF, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false});
+  const glow = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, len, 18, 1, true), glowMat);
+  glow.position.set(0, midY, 0); orbitGroup.add(glow);
+  const particles = [];
+  for(let i = 0; i < 18; i++){
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({map: softGlowTex, color: 0xbdf3ff, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false}));
+    const sc = 0.5 + Math.random() * 0.3; sp.scale.set(sc, sc, 1);
+    orbitGroup.add(sp);
+    particles.push({sprite: sp, t: i / 18, dir: i % 2 === 0 ? 1 : -1, speed: 0.32 + Math.random() * 0.2});
+  }
+  pmsBeam = {coreMat, glowMat, core, particles, A, B};
+
   const img = new Image();
-  img.onload = () => addCard(pos, pmsCardTexture(img), 7.8, 7.8 * (520 / 768), conn);
-  img.onerror = () => addCard(pos, pmsCardTexture(null), 7.8, 7.8 * (520 / 768), conn);
+  img.onload = () => addCard(pos, pmsCardTexture(img), cardW, cardH, null);
+  img.onerror = () => addCard(pos, pmsCardTexture(null), cardW, cardH, null);
   img.src = 'data:image/png;base64,' + OD_LOGO_B64;
 })();
 
@@ -684,6 +706,21 @@ function animate(){
       cn.pulse.material.opacity = 0;
     }
   });
+
+  if(pmsBeam){
+    const thr = 0.6 + 0.4 * Math.sin(t * 4.2);
+    pmsBeam.coreMat.opacity = 0.45 + 0.4 * thr;
+    pmsBeam.glowMat.opacity = 0.14 + 0.16 * thr;
+    pmsBeam.core.scale.x = pmsBeam.core.scale.z = 1 + 0.2 * Math.sin(t * 5.5);
+    const span = pmsBeam.B.y - pmsBeam.A.y;
+    pmsBeam.particles.forEach(p => {
+      p.t += p.dir * p.speed * dt;
+      if(p.t > 1) p.t -= 1; else if(p.t < 0) p.t += 1;
+      const edge = Math.sin(p.t * Math.PI);
+      p.sprite.position.set(0, pmsBeam.A.y + span * p.t, 0);
+      p.sprite.material.opacity = 0.25 + 0.7 * edge;
+    });
+  }
 
   if(!reducedMotion) coreGroup.rotation.y += dt * 0.1;
 
